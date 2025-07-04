@@ -1,4 +1,5 @@
 
+from math import comb
 import pandas as pd
 
 def import_csv(file_path):
@@ -29,9 +30,73 @@ def import_csv(file_path):
 if __name__ == "__main__":
     file_path = "CalculateBasketballScoringProbabilities/stephen_curry_shots_2023.csv"
     df = import_csv(file_path)
-    print(df)
-    print(df['result'])
-    counts = df['result'].value_counts()
-    print(counts)
+    #print(df)
+    #print(df['result'])
+    makes = df['result'].value_counts()
+    pointers = df['shot_type'].value_counts()
+    total_shots = df['result'].size
+
+    #print(makes / total_shots)
+    #print(total_shots)
+    #print(pointers / total_shots)
+
+    # Probabilities
+    prob_make = makes.iloc[1] / total_shots
+    prob_miss = makes.iloc[0] / total_shots
+    prob_three_pointer = pointers.iloc[0] / total_shots
+    prob_two_pointer = pointers.iloc[1] / total_shots
+
+    # 1. Probability of making 3 of the next 4 shots
+    p_make = prob_make
+    p_3_of_4 = comb(4, 3) * (p_make**3) * ((1 - p_make)**1) + comb(4, 4) * (p_make**4)
+
+    # 2. Probability that 4 of the next 5 shots are three-pointers
+    p_3pt = prob_three_pointer
+    p_4_of_5_3pt = comb(5, 4) * (p_3pt**4) * ((1 - p_3pt)**1) + comb(5, 5) * (p_3pt**5)
+
+
+    print('Total Shots:', total_shots)
+    print('Probability of Make (TRUE):', prob_make)
+    print('Probability of Miss (FALSE)', prob_miss)
+    print('Proportion of Three-Pointers', prob_three_pointer)
+    print('Proportion of Two-Pointers', prob_two_pointer)
+
+    print("Probability of making 3 of next 4 shots", p_3_of_4)
+    print("Probability that 4 of next 5 shots are three-pointers", p_4_of_5_3pt)
+
+
+    # Total shots by type
+    three_pt_df = df[df['shot_type'] == 3]
+    two_pt_df = df[df['shot_type'] == 2]
+
+    # Conditional probabilities for future shots
+    # P(Make | 3PT) = Makes among 3PT / Total 3PT
+    p_make_given_3pt = three_pt_df['result'].mean()
+    p_lead_given_3pt = three_pt_df['lead'].mean()
+
+    # P(Make | 2PT) = Makes among 2PT / Total 2PT
+    p_make_given_2pt = two_pt_df['result'].mean()
+    p_lead_given_2pt = two_pt_df['lead'].mean()
+
+    print("-"*40)
+    print("P(Make | Three-Pointer)", p_make_given_3pt)
+    print("P(Lead | Three-Pointer)", p_lead_given_3pt)
+    print("P(Make | Two-Pointer)", p_make_given_2pt)
+    print("P(Lead | Two-Pointer)", p_lead_given_2pt)
+
+
+    # Filter only made shots
+    made_df = df[df['result'] == True]
+    total_made = len(made_df)
+
+    # Conditional probabilities given that a shot was made
+    p_3pt_given_make = (made_df['shot_type'] == 3).sum() / total_made
+    p_2pt_given_make = (made_df['shot_type'] == 2).sum() / total_made
+    p_lead_given_make = made_df['lead'].mean()
+
+    print("-"*40)
+    print("P(Three-Pointer | Made Shot)", p_3pt_given_make)
+    print("P(Two-Pointer | Made Shot)", p_2pt_given_make)
+    print("P(Lead | Made Shot)", p_lead_given_make)
 
 
