@@ -27,10 +27,11 @@ def import_csv(file_path):
 
 # Example usage
 if __name__ == "__main__":
-    file_path = "stephen_curry_shots_2023.csv"
+    file_path = "CalculateBasketballScoringProbabilities/stephen_curry_shots_2023.csv"
     df = import_csv(file_path)
     print(df)
     print(df['result'])
     counts = df['result'].value_counts()
     print(counts)
+
 
