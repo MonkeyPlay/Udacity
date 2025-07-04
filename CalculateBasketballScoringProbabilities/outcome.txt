@@ -1,1 +1,20 @@
 
+The output of the python script should be like this:
+
+Total Shots: 1434
+Probability of Make (TRUE): 0.4902
+Probability of Miss (FALSE) 0.5098
+Proportion of Three-Pointers 0.5481
+Proportion of Two-Pointers 0.4519
+----------------------------------------
+Probability of making 3 of next 4 shots 0.2402
+Probability that 4 of next 5 shots are three-pointers 0.2039
+----------------------------------------
+P(Make | Three-Pointer) 0.4186
+P(Lead | Three-Pointer) 0.4936
+P(Make | Two-Pointer) 0.5772
+P(Lead | Two-Pointer) 0.5154
+----------------------------------------
+P(Three-Pointer | Made Shot) 0.468
+P(Two-Pointer | Made Shot) 0.532
+P(Lead | Made Shot) 0.5619
